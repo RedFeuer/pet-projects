@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
-	fmt.Println("Hello World!")
-	fmt.Println("Hello World!")
+	var a int
+	fmt.Scanf("%d", &a)
+	fmt.Printf("%d", a)
 }
