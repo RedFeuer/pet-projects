@@ -8,6 +8,6 @@ func AddBDS(x, y int) int {
 	return x + y
 }
 
-func PrintSlice(s []int) {
-	fmt.Printf("len = %d cap = %d %v", len(s), cap(s), s)	
+func PrintSlice(s string,x []int) {
+	fmt.Printf("%s: len = %d cap = %d %v\n", s, len(x), cap(x), x)	
 }
