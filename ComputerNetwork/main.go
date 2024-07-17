@@ -2,16 +2,21 @@ package main
 
 import (
 	"fmt"
-	"graph"
+	"ComputerNetwork/graph"
+	"ComputerNetwork/logic"
 	//"github.com/RedFeuer/pet-projects/graph"
 )
 
+// func add(x, y int) int {
+// 	return x + y
+// }
+
 func main() {
 	var a int
-	var b int
 	fmt.Scanf("%d", &a)
-	fmt.Printf("%d", a)
+	var b int
 	fmt.Scanf("%d", &b)
-	fmt.Printf("%d", b)
-	fmt.Printf("%d", graph.sum(a, b))
+	res1 := graph.AddBDS(a,b)
+	res2 := logic.SumBDS(a, b)
+	fmt.Printf("%d == %d", res1, res2)
 }
