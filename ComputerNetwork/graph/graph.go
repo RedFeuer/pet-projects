@@ -1,5 +1,7 @@
 package graph
 
-func sum(x, y int) int {
+var D = 4
+
+func AddBDS(x, y int) int {
 	return x + y
 }

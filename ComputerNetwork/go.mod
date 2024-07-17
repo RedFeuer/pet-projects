@@ -1,3 +1,3 @@
-module github.com/RedFeuer/pet-projects/graph
+module ComputerNetwork
 
 go 1.22.5
