@@ -2,20 +2,22 @@ package main
 
 import (
 	"fmt"
-    g "ComputerNetwork/graph"
-	// "ComputerNetwork/logic"
+
+	"github"
 )
 
-type COLOR int
-const (
-	WHITE COLOR = iota            // 0 - белый
-	GRAY                          // 1 - серый
- 	BLACK                         // 2 - черный
-)
+// type COLOR int
+// const (
+// 	WHITE COLOR = iota            // 0 - белый
+// 	GRAY                          // 1 - серый
+//  	BLACK                         // 2 - черный
+// )
 
 func main() {
 	/*создаем граф*/
 	graph := g.Create_graph()
+
+	d.D1_Insert_Vertex(graph)
 
 	for i := 0; i < 1000; i++ {
         compName := fmt.Sprintf("computer%d", i)
