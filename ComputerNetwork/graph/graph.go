@@ -4,29 +4,29 @@ package graph
 
 
 type Vertex struct {
-	comp string                   // уникальное имя компьютера
-	port uint                     // номер порта компьютера
-	color COLOR                   // цвет вершины: 0-белый, 1-серый, 2-черный
-	parent *Node                  // предок
-	path_size int                 // длина пути от исходной вершины
-	component int                 // номер компоненты связности, к которой относится вершина
+	Comp string                   // уникальное имя компьютера
+	Port uint                     // номер порта компьютера
+	Color int                  // цвет вершины: 0-белый, 1-серый, 2-черный
+	Parent *Node                  // предок
+	Path_size int                 // длина пути от исходной вершины
+	Component int                 // номер компоненты связности, к которой относится вершина
 } 
 
 type Edge struct {
-	ports []uint                  // перечень допустимых для связи между собой по данному ребру портов
-	ports_count int               // количество портов для данного ребра
+	Ports []uint                  // перечень допустимых для связи между собой по данному ребру портов
+	Ports_count int               // количество портов для данного ребра
 }
 
 /*ЛИНЕЙНЫЙ ОДНОСВЯЗНЫЙ СПИСОК(LINEAR SINGLE-LINKED LIST)*/
 type AdjacentVertex struct {
-	vertex *Vertex                // Указатель на данную смежную вершину
-	edge *Edge                    // Указатель на ребро, соединяющее основную и смежную к ней вершины
-	next *AdjacentVertex          // Следующая в списке смежная вершина(смежная к основной)
+	Vertex *Vertex                // Указатель на данную смежную вершину
+	Edge *Edge                    // Указатель на ребро, соединяющее основную и смежную к ней вершины
+	Next *AdjacentVertex          // Следующая в списке смежная вершина(смежная к основной)
 }
 
 type Node struct {
-	vertex *Vertex                // Указатель на данную основную вершину
-	adjacent *AdjacentVertex      // Указатель на смежные вершины
+	Vertex *Vertex                // Указатель на данную основную вершину
+	Adjacent *AdjacentVertex      // Указатель на смежные вершины
 }
 
 /*ХЭШ-ТАБЛИЦА(MAP)*/
@@ -40,3 +40,10 @@ const (
 	GRAY                          // 1 - серый
  	BLACK                         // 2 - черный
 )
+
+
+func Create_graph() *Graph {
+	return &Graph{
+		Table: make(map[string]*Node),
+	}
+}
