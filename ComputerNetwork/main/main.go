@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github"
+	d "github.com/RedFeuer/pet-projects/ComputerNetwork/dialog"
 )
 
 // type COLOR int

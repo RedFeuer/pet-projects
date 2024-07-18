@@ -2,7 +2,8 @@ package dialog
 
 import (
 	"fmt"
-
+	
+	l "github.com/RedFeuer/pet-projects/ComputerNetwork/logic"
 
 )
 
