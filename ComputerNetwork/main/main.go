@@ -52,13 +52,14 @@ func Create_graph() *Graph {
 }
 
 func Initialize_node(new_vertex *Vertex) *Node {
-	var new_node *Node
+	new_node := &Node{}
 	new_node.Vertex = new_vertex
 	return new_node
 }
 
 func Create_vertex(comp string, port uint) *Vertex {
-	var new_vertex *Vertex
+	// var new_vertex *Vertex
+	new_vertex := &Vertex{}
 	new_vertex.Comp = comp
 	new_vertex.Port = port
 	return new_vertex
