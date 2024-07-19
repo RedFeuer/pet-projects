@@ -76,7 +76,7 @@ func D1_Insert_Vertex(graph *Graph) {
 	}
 	fmt.Printf("Enter number of port for computer %s: ", comp)
 	var port uint
-	fmt.Scanf("%u\n", &port)
+	fmt.Scanf("%d\n", &port)
 
 	/*ПРОВЕРКА: СУЩЕСТВУЕТ ЛИ ЭЛЕМЕНТ С ТАКИМ КЛЮЧОМ В ГРАФЕ*/
 	// var elem *Node
@@ -86,18 +86,47 @@ func D1_Insert_Vertex(graph *Graph) {
 	graph.Table[comp] = new_node
 }
 
+func D7_Output_as_adjacency_list(graph *Graph) {
+	for comp, node := range graph.Table {
+		fmt.Printf("Computer name: %s    Port: %d\n", comp, node.Vertex.Port)
+	}
+}
+
+func Print_menu() {
+	fmt.Print("\n")
+	fmt.Printf("MENU:\n");
+	fmt.Printf("Any. Exit\n");
+	fmt.Printf("1. Insert vertex\n");
+	fmt.Printf("2. Insert edge\n");
+	fmt.Printf("3. Remove vertex\n");
+	fmt.Printf("4. Remove edge\n");
+	fmt.Printf("5. Change vertex\n");
+	fmt.Printf("6. Change edge\n");
+	fmt.Printf("7. Output graph as adjacency list\n");
+	fmt.Printf("8. Graphical output\n");
+	fmt.Printf("9. Graph traversal:BFS\n");
+	fmt.Printf("10. Find the shortest path between two vertices of a graph\n");
+	fmt.Printf("11. Special operation: partitioning into connected components\n");
+	fmt.Printf("Your choice: ");
+
+}
+
 func main() {
 	/*создаем граф*/
 	graph := Create_graph()
 
 	var flag int = 1
 	for flag == 1 {
+		Print_menu()
 		var choice int
+		fmt.Scanf("%d", &choice)
 		switch choice {
 			default : // ВЫХОД ИЗ ПРОГРАММЫ
 				flag = 0
 			case 1 :
 				D1_Insert_Vertex(graph)
+			case 7:
+				D7_Output_as_adjacency_list(graph)
 		} 
 	}
 	// for i := 0; i < 1000; i++ {
