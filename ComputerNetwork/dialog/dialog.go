@@ -1,12 +1,12 @@
 package dialog
 
 import (
-	"fmt"
+	// "fmt"
 	
-	l "github.com/RedFeuer/pet-projects/ComputerNetwork/logic"
+	// l "github.com/RedFeuer/pet-projects/ComputerNetwork/logic"
 
 )
 
-func D1_Insert_Vertex(graph *Graph) {
-	fmt.Printf("Hello, main, from dialog!\n")
-}
+// func D1_Insert_Vertex(graph *Graph) {
+// 	fmt.Printf("Hello, main, from dialog!\n")
+// }
