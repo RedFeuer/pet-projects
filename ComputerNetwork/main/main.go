@@ -106,6 +106,23 @@ func Read_non_empty_string(reader *bufio.Reader, prompt string) string {
 	return result
 }
 
+func Read_integer(reader *bufio.Reader, prompt string) uint {
+	var result uint
+	var err error
+
+	for {
+		fmt.Print(prompt)
+		_, err = fmt.Scan(&result)
+		if err != nil {
+			fmt.Println("Error reading input. Try again.")
+			reader.ReadString('\n') // очистка буфера ввода от неверных данных
+			continue
+		}
+		break
+	}
+	return result
+}
+
 func Print_menu() {
 	fmt.Print("\n")
 	fmt.Printf("MENU:\n")
@@ -121,7 +138,6 @@ func Print_menu() {
 	fmt.Printf("9. Graph traversal:BFS\n")
 	fmt.Printf("10. Find the shortest path between two vertices of a graph\n")
 	fmt.Printf("11. Special operation: partitioning into connected components\n")
-	fmt.Printf("Your choice: ")
 
 }
 
@@ -132,9 +148,14 @@ func main() {
 	var flag int = 1
 	for flag == 1 {
 		Print_menu()
-		var choice int
-		fmt.Scanf("%d", &choice)
+		reader := bufio.NewReader(os.Stdin)
+		choice := Read_integer(reader, "Your choice: ")
+		//var choice int
+		//fmt.Scanf("%d", &choice)
 		switch choice {
+		default:
+			fmt.Printf("Error: Invalid input. Try again. Enter number from 0 to 10\n")
+			continue
 		case 0: // ВЫХОД ИЗ ПРОГРАММЫ
 			flag = 0
 		case 1:
