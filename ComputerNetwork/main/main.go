@@ -69,7 +69,13 @@ func Create_vertex(comp string, port uint) *Vertex {
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) {
 	/*связываем source -> destination*/
 	if graph.Table[comp_src].Adjacent != nil {
-		graph.Table[comp_src].Adjacent.Next = graph.Table[comp_src].Adjacent
+		/*ПРОБЛЕМА
+		при соединении уже соединенной вершины просто переписываю вместо элемента листа элемент
+		надо сохранять копию*/
+		existing := &AdjacentVertex{}
+		existing.Vertex = graph.Table[comp_src].Adjacent.Vertex
+		existing.Edge = graph.Table[comp_src].Adjacent.Edge
+		graph.Table[comp_src].Adjacent.Next = existing
 	}
 	new_adjacent_for_src := &AdjacentVertex{}
 	graph.Table[comp_src].Adjacent = new_adjacent_for_src
@@ -80,7 +86,10 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	new_adjacent_for_src.Edge = new_edge_for_adjacent_for_src
 
 	if graph.Table[comp_dst].Adjacent != nil {
-		graph.Table[comp_dst].Adjacent.Next = graph.Table[comp_dst].Adjacent
+		existing := &AdjacentVertex{}
+		existing.Vertex = graph.Table[comp_dst].Adjacent.Vertex
+		existing.Edge = graph.Table[comp_dst].Adjacent.Edge
+		graph.Table[comp_dst].Adjacent.Next = existing
 	}
 	new_adjacent_for_dst := &AdjacentVertex{}
 	graph.Table[comp_dst].Adjacent = new_adjacent_for_dst
@@ -89,8 +98,6 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	new_edge_for_adjacent_for_dst.Ports_count = ports_count
 	new_edge_for_adjacent_for_dst.Ports = ports
 	new_adjacent_for_dst.Edge = new_edge_for_adjacent_for_dst
-	//new_adjacent_for_dst.Edge.Ports_count = ports_count
-	//new_adjacent_for_dst.Edge.Ports = ports
 }
 
 func D1_Insert_Vertex(graph *Graph) {
