@@ -60,7 +60,6 @@ func Initialize_node(new_vertex *Vertex) *Node {
 }
 
 func Create_vertex(comp string, port uint) *Vertex {
-	// var new_vertex *Vertex
 	new_vertex := &Vertex{}
 	new_vertex.Comp = comp
 	new_vertex.Port = port
@@ -70,10 +69,8 @@ func Create_vertex(comp string, port uint) *Vertex {
 func D1_Insert_Vertex(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
-	fmt.Printf("Enter number of port for computer %s: ", comp)
-	var port uint
-	fmt.Scanf("%d\n", &port)
-
+	fmt.Printf("Enter number of port for computer %s", comp)
+	port := Read_integer(reader, ": ")
 	new_vertex := Create_vertex(comp, port)
 	new_node := Initialize_node(new_vertex)
 	graph.Table[comp] = new_node
@@ -120,13 +117,14 @@ func Read_integer(reader *bufio.Reader, prompt string) uint {
 		}
 		break
 	}
+	reader.ReadString('\n') // очистка буфера от \n
 	return result
 }
 
 func Print_menu() {
 	fmt.Print("\n")
 	fmt.Printf("MENU:\n")
-	fmt.Printf("Any. Exit\n")
+	fmt.Printf("0. Exit\n")
 	fmt.Printf("1. Insert vertex\n")
 	fmt.Printf("2. Insert edge\n")
 	fmt.Printf("3. Remove vertex\n")
@@ -138,12 +136,21 @@ func Print_menu() {
 	fmt.Printf("9. Graph traversal:BFS\n")
 	fmt.Printf("10. Find the shortest path between two vertices of a graph\n")
 	fmt.Printf("11. Special operation: partitioning into connected components\n")
-
 }
 
 func main() {
 	/*создаем граф*/
 	graph := Create_graph()
+
+	test_reader := bufio.NewReader(os.Stdin)
+	test_str1 := Read_non_empty_string(test_reader, "test prompt for string1: ")
+	fmt.Println(test_str1)
+	test_int1 := Read_integer(test_reader, "test prompt for int1: ")
+	fmt.Println(test_int1)
+	test_int2 := Read_integer(test_reader, "test prompt for int2: ")
+	fmt.Println(test_int2)
+	test_str2 := Read_non_empty_string(test_reader, "test prompt for string2: ")
+	fmt.Println(test_str2)
 
 	var flag int = 1
 	for flag == 1 {
