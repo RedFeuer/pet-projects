@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	//d "github.com/RedFeuer/pet-project988888888s/ComputerNetwork/dialog"
 )
 
@@ -68,8 +69,7 @@ func Create_vertex(comp string, port uint) *Vertex {
 
 func D1_Insert_Vertex(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Enter unique computer name:")
-	comp, _ := reader.ReadString('\n')``
+	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
 	fmt.Printf("Enter number of port for computer %s: ", comp)
 	var port uint
 	fmt.Scanf("%d\n", &port)
@@ -90,8 +90,20 @@ func Read_non_empty_string(reader *bufio.Reader, prompt string) string {
 	var err error
 
 	for {
-		fmt.Print
+		fmt.Print(prompt)
+		result, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading input. Try again.")
+			continue
+		}
+		result = strings.TrimSpace(result)
+		if result == "" {
+			fmt.Println("Error: Empty string. Try again.")
+			continue
+		}
+		break
 	}
+	return result
 }
 
 func Print_menu() {
