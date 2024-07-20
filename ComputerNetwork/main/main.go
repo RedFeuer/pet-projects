@@ -19,7 +19,7 @@ type Vertex struct {
 
 type Edge struct {
 	Ports       []uint // перечень допустимых для связи между собой по данному ребру портов
-	Ports_count int    // количество портов для данного ребра
+	Ports_count uint   // количество портов для данного ребра
 }
 
 /*ЛИНЕЙНЫЙ ОДНОСВЯЗНЫЙ СПИСОК(LINEAR SINGLE-LINKED LIST)*/
@@ -66,6 +66,33 @@ func Create_vertex(comp string, port uint) *Vertex {
 	return new_vertex
 }
 
+func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) {
+	/*связываем source -> destination*/
+	if graph.Table[comp_src].Adjacent != nil {
+		graph.Table[comp_src].Adjacent.Next = graph.Table[comp_src].Adjacent
+	}
+	new_adjacent_for_src := &AdjacentVertex{}
+	graph.Table[comp_src].Adjacent = new_adjacent_for_src
+	new_adjacent_for_src.Vertex = graph.Table[comp_dst].Vertex
+	new_edge_for_adjacent_for_src := &Edge{}
+	new_edge_for_adjacent_for_src.Ports_count = ports_count
+	new_edge_for_adjacent_for_src.Ports = ports
+	new_adjacent_for_src.Edge = new_edge_for_adjacent_for_src
+
+	if graph.Table[comp_dst].Adjacent != nil {
+		graph.Table[comp_dst].Adjacent.Next = graph.Table[comp_dst].Adjacent
+	}
+	new_adjacent_for_dst := &AdjacentVertex{}
+	graph.Table[comp_dst].Adjacent = new_adjacent_for_dst
+	new_adjacent_for_dst.Vertex = graph.Table[comp_src].Vertex
+	new_edge_for_adjacent_for_dst := &Edge{}
+	new_edge_for_adjacent_for_dst.Ports_count = ports_count
+	new_edge_for_adjacent_for_dst.Ports = ports
+	new_adjacent_for_dst.Edge = new_edge_for_adjacent_for_dst
+	//new_adjacent_for_dst.Edge.Ports_count = ports_count
+	//new_adjacent_for_dst.Edge.Ports = ports
+}
+
 func D1_Insert_Vertex(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
@@ -76,9 +103,36 @@ func D1_Insert_Vertex(graph *Graph) {
 	graph.Table[comp] = new_node
 }
 
+func D2_Insert_Edge(graph *Graph) {
+	reader := bufio.NewReader(os.Stdin)
+	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
+	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
+	if graph.Table[comp_src] == nil || graph.Table[comp_dst] == nil {
+		fmt.Println("Error: There no such vertex in graph")
+		return
+	}
+	if graph.Table[comp_src] == graph.Table[comp_dst] {
+		fmt.Println("Error: can't connect twice")
+	}
+
+	ports_count := Read_integer(reader, "Enter number of ports: ")
+	ports := make([]uint, ports_count)
+	for i := 0; i < int(ports_count); i++ {
+		ports[i] = Read_integer(reader, "Enter port: ")
+	}
+
+	Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
+}
+
 func D7_Output_as_adjacency_list(graph *Graph) {
 	for comp, node := range graph.Table {
-		fmt.Printf("Computer name: %s    Port: %d\n", comp, node.Vertex.Port)
+		fmt.Printf("Computer name: %s Port: %d  -> ", comp, node.Vertex.Port)
+		adjacent := node.Adjacent
+		for adjacent != nil {
+			fmt.Printf("%s ", adjacent.Vertex.Comp)
+			adjacent = adjacent.Next
+		}
+		fmt.Printf("\n")
 	}
 }
 
@@ -155,6 +209,8 @@ func main() {
 			flag = 0
 		case 1:
 			D1_Insert_Vertex(graph)
+		case 2:
+			D2_Insert_Edge(graph)
 		case 7:
 			D7_Output_as_adjacency_list(graph)
 		}
