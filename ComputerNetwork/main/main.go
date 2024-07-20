@@ -150,8 +150,6 @@ func main() {
 		Print_menu()
 		reader := bufio.NewReader(os.Stdin)
 		choice := Read_integer(reader, "Your choice: ")
-		//var choice int
-		//fmt.Scanf("%d", &choice)
 		switch choice {
 		default:
 			fmt.Printf("Error: Invalid input. Try again. Enter number from 0 to 10\n")
