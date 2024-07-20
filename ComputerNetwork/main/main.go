@@ -142,16 +142,6 @@ func main() {
 	/*создаем граф*/
 	graph := Create_graph()
 
-	test_reader := bufio.NewReader(os.Stdin)
-	test_str1 := Read_non_empty_string(test_reader, "test prompt for string1: ")
-	fmt.Println(test_str1)
-	test_int1 := Read_integer(test_reader, "test prompt for int1: ")
-	fmt.Println(test_int1)
-	test_int2 := Read_integer(test_reader, "test prompt for int2: ")
-	fmt.Println(test_int2)
-	test_str2 := Read_non_empty_string(test_reader, "test prompt for string2: ")
-	fmt.Println(test_str2)
-
 	var flag int = 1
 	for flag == 1 {
 		Print_menu()
