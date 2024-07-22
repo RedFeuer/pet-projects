@@ -68,24 +68,25 @@ func Create_vertex(comp string, port uint) *Vertex {
 }
 
 /*эта функция ищет, если ли у данной вершины с именем comp_src смежная вершина с именем comp_dst*/
-func find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) int {
+/*возвращает смежную вершину с именем comp_dst*/
+func Find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) *AdjacentVertex {
 	for comp, node := range graph.Table {
 		if comp == comp_src {
 			if node.Adjacent == nil {
-				return 1
+				return nil
 			}
 			for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
 				adjacent_vertex := elem.Value.(*AdjacentVertex)
 				if adjacent_vertex.Vertex.Comp == comp_dst {
-					return 0
+					return adjacent_vertex
 				}
 			}
 			/*скорее всего return 1 лучше сделать тут, чтобы быстрее работало*/
 			/*ЕСЛИ КАКАЯ-ТО НЕВЕРНАЯ ОШИБКА ПРИ ДОБАВЛЕНИИ РЕБРА, ТО ОНА СКОРЕЕ ВСЕГО ТУТ*/
-			return 1
+			return nil
 		}
 	}
-	return 1
+	return nil
 }
 
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
@@ -98,7 +99,7 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 		return 2
 	}
 	/*проверка: между соединяемыми вершинами не существует ребра*/
-	if find_adjacent_vertex(graph, comp_src, comp_dst) == 0 || find_adjacent_vertex(graph, comp_dst, comp_src) == 0 {
+	if Find_adjacent_vertex(graph, comp_src, comp_dst) != nil || Find_adjacent_vertex(graph, comp_dst, comp_src) != nil {
 		return 3
 	}
 	//if graph.Table[comp_src].Adjacent != nil && graph.Table[comp_dst].Adjacent != nil {
@@ -126,6 +127,15 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	return 0
 }
 
+func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
+	/*ДЕЛАТЬ ПРОВЕРКИ*/
+
+	elem_remove_src := Find_adjacent_vertex(graph, comp_src, comp_dst)
+	graph.Table[comp_src].Adjacent.Remove(*list.Element(elem_remove_src))
+
+	graph.Table[comp_dst].Adjacent.Remove(elem_remove_dst)
+}
+
 func D1_Insert_Vertex(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
@@ -147,8 +157,8 @@ func D2_Insert_Edge(graph *Graph) {
 		ports[i] = Read_integer(reader, "Enter port: ")
 	}
 
-	status := Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
-	switch status {
+	termination_status := Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
+	switch termination_status {
 	default:
 		break
 	case 1:
@@ -157,6 +167,16 @@ func D2_Insert_Edge(graph *Graph) {
 		fmt.Println("Error: can't connect vertex to itself")
 	case 3:
 		fmt.Println("Error: can't connect vertices that have been already connected")
+	}
+}
+
+func D4_Remove_Edge(graph *Graph) {
+	reader := bufio.NewReader(os.Stdin)
+	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
+	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
+	termination_status := Remove_Edge_Logic(graph, comp_src, comp_dst)
+	switch termination_status {
+
 	}
 }
 
