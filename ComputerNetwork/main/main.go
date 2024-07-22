@@ -67,6 +67,25 @@ func Create_vertex(comp string, port uint) *Vertex {
 	return new_vertex
 }
 
+/*эта функция ищет, если ли у данной вершины с именем comp_src смежная вершина с именем comp_dst*/
+func find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) int {
+	for comp, node := range graph.Table {
+		if comp == comp_src {
+			if node.Adjacent == nil {
+				return 1
+			}
+			for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
+				adjacent_vertex := elem.Value.(*AdjacentVertex)
+				if adjacent_vertex.Vertex.Comp == comp_dst {
+					return 0
+				}
+			}
+		}
+		/*скорее всего return 1 лучше сделать тут, чтобы быстрее работало*/
+	}
+	return 1
+}
+
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
 	/*проверка: одной из вершин нет*/
 	if graph.Table[comp_src] == nil || graph.Table[comp_dst] == nil {
@@ -77,9 +96,12 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 		return 2
 	}
 	/*проверка: между соединяемыми вершинами не существует ребра*/
-	if graph.Table[comp_src].Adjacent != nil || graph.Table[comp_dst].Adjacent != nil {
+	if find_adjacent_vertex(graph, comp_src, comp_dst) == 0 || find_adjacent_vertex(graph, comp_dst, comp_src) == 0 {
 		return 3
 	}
+	//if graph.Table[comp_src].Adjacent != nil && graph.Table[comp_dst].Adjacent != nil {
+	//	return 3
+	//}
 
 	/*соединяем основную вершину со смежной: src -> dst*/
 	if graph.Table[comp_src].Adjacent == nil {
