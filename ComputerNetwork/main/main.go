@@ -67,7 +67,18 @@ func Create_vertex(comp string, port uint) *Vertex {
 	return new_vertex
 }
 
-func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) {
+func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
+	/*проверка: одного из элементов нет*/
+	if graph.Table[comp_src] == nil || graph.Table[comp_dst] == nil {
+		return 1
+	}
+	/*проверка: не соединяем одинаковые вершины*/
+	if graph.Table[comp_src] == graph.Table[comp_dst] {
+		return 2
+	}
+	/*проверка: между соединяемыми вершинами не существует ребра
+	ДОПИСАТЬ!!!!!*/
+
 	/*соединяем основную вершину со смежной: src -> dst*/
 	if graph.Table[comp_src].Adjacent == nil {
 		graph.Table[comp_src].Adjacent = list.New()
@@ -85,6 +96,8 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	new_adjacent_for_dst.Edge = &Edge{ports, ports_count}
 	new_adjacent_for_dst.Vertex = graph.Table[comp_src].Vertex
 	graph.Table[comp_dst].Adjacent.PushBack(new_adjacent_for_dst)
+
+	return 0
 }
 
 func D1_Insert_Vertex(graph *Graph) {
@@ -101,13 +114,6 @@ func D2_Insert_Edge(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
-	if graph.Table[comp_src] == nil || graph.Table[comp_dst] == nil {
-		fmt.Println("Error: There no such vertex in graph")
-		return
-	}
-	if graph.Table[comp_src] == graph.Table[comp_dst] {
-		fmt.Println("Error: can't connect twice")
-	}
 
 	ports_count := Read_integer(reader, "Enter number of ports: ")
 	ports := make([]uint, ports_count)
@@ -115,16 +121,27 @@ func D2_Insert_Edge(graph *Graph) {
 		ports[i] = Read_integer(reader, "Enter port: ")
 	}
 
-	Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
+	status := Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
+	switch status {
+	default:
+		break
+	case 1:
+		fmt.Println("Error: There no such vertex in graph")
+	case 2:
+		fmt.Println("Error: can't connect twice")
+	}
 }
 
 func D7_Output_as_adjacency_list(graph *Graph) {
 	for comp, node := range graph.Table {
-		fmt.Printf("Computer name: %s Port: %d  -> ", comp, node.Vertex.Port)
-		//adjacent := node.Adjacent
+		fmt.Printf("Computer name: %s Port: %d  ", comp, node.Vertex.Port)
+		if node.Adjacent == nil {
+			fmt.Printf("\n")
+			continue
+		}
 		for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
 			adjacent_vertex := elem.Value.(*AdjacentVertex)
-			fmt.Printf("%s -> ", adjacent_vertex.Vertex.Comp)
+			fmt.Printf(" ->  %s", adjacent_vertex.Vertex.Comp)
 		}
 		fmt.Printf("\n")
 	}
