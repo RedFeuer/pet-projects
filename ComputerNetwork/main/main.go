@@ -80,8 +80,10 @@ func find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) int {
 					return 0
 				}
 			}
+			/*скорее всего return 1 лучше сделать тут, чтобы быстрее работало*/
+			/*ЕСЛИ КАКАЯ-ТО НЕВЕРНАЯ ОШИБКА ПРИ ДОБАВЛЕНИИ РЕБРА, ТО ОНА СКОРЕЕ ВСЕГО ТУТ*/
+			return 1
 		}
-		/*скорее всего return 1 лучше сделать тут, чтобы быстрее работало*/
 	}
 	return 1
 }
