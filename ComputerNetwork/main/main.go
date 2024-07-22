@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"container/list"
 	"fmt"
 	"os"
 	"strings"
@@ -24,14 +25,14 @@ type Edge struct {
 
 /*ЛИНЕЙНЫЙ ОДНОСВЯЗНЫЙ СПИСОК(LINEAR SINGLE-LINKED LIST)*/
 type AdjacentVertex struct {
-	Vertex *Vertex         // Указатель на данную смежную вершину
-	Edge   *Edge           // Указатель на ребро, соединяющее основную и смежную к ней вершины
-	Next   *AdjacentVertex // Следующая в списке смежная вершина(смежная к основной)
+	Vertex *Vertex // Указатель на данную смежную вершину
+	Edge   *Edge   // Указатель на ребро, соединяющее основную и смежную к ней вершины
+	// Next   *AdjacentVertex // Следующая в списке смежная вершина(смежная к основной)
 }
 
 type Node struct {
-	Vertex   *Vertex         // Указатель на данную основную вершину
-	Adjacent *AdjacentVertex // Указатель на смежные вершины
+	Vertex   *Vertex    // Указатель на данную основную вершину
+	Adjacent *list.List // Указатель на смежные вершины
 }
 
 /*ХЭШ-ТАБЛИЦА(MAP)*/
@@ -67,37 +68,23 @@ func Create_vertex(comp string, port uint) *Vertex {
 }
 
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) {
-	/*связываем source -> destination*/
-	if graph.Table[comp_src].Adjacent != nil {
-		/*ПРОБЛЕМА
-		при соединении уже соединенной вершины просто переписываю вместо элемента листа элемент
-		надо сохранять копию*/
-		existing := &AdjacentVertex{}
-		existing.Vertex = graph.Table[comp_src].Adjacent.Vertex
-		existing.Edge = graph.Table[comp_src].Adjacent.Edge
-		graph.Table[comp_src].Adjacent.Next = existing
+	/*соединяем основную вершину со смежной: src -> dst*/
+	if graph.Table[comp_src].Adjacent == nil {
+		graph.Table[comp_src].Adjacent = list.New()
 	}
 	new_adjacent_for_src := &AdjacentVertex{}
-	graph.Table[comp_src].Adjacent = new_adjacent_for_src
+	new_adjacent_for_src.Edge = &Edge{ports, ports_count}
 	new_adjacent_for_src.Vertex = graph.Table[comp_dst].Vertex
-	new_edge_for_adjacent_for_src := &Edge{}
-	new_edge_for_adjacent_for_src.Ports_count = ports_count
-	new_edge_for_adjacent_for_src.Ports = ports
-	new_adjacent_for_src.Edge = new_edge_for_adjacent_for_src
+	graph.Table[comp_src].Adjacent.PushBack(new_adjacent_for_src)
 
-	if graph.Table[comp_dst].Adjacent != nil {
-		existing := &AdjacentVertex{}
-		existing.Vertex = graph.Table[comp_dst].Adjacent.Vertex
-		existing.Edge = graph.Table[comp_dst].Adjacent.Edge
-		graph.Table[comp_dst].Adjacent.Next = existing
+	/*обратное соединение: dst -> src*/
+	if graph.Table[comp_dst].Adjacent == nil {
+		graph.Table[comp_dst].Adjacent = list.New()
 	}
 	new_adjacent_for_dst := &AdjacentVertex{}
-	graph.Table[comp_dst].Adjacent = new_adjacent_for_dst
+	new_adjacent_for_dst.Edge = &Edge{ports, ports_count}
 	new_adjacent_for_dst.Vertex = graph.Table[comp_src].Vertex
-	new_edge_for_adjacent_for_dst := &Edge{}
-	new_edge_for_adjacent_for_dst.Ports_count = ports_count
-	new_edge_for_adjacent_for_dst.Ports = ports
-	new_adjacent_for_dst.Edge = new_edge_for_adjacent_for_dst
+	graph.Table[comp_dst].Adjacent.PushBack(new_adjacent_for_dst)
 }
 
 func D1_Insert_Vertex(graph *Graph) {
@@ -134,10 +121,10 @@ func D2_Insert_Edge(graph *Graph) {
 func D7_Output_as_adjacency_list(graph *Graph) {
 	for comp, node := range graph.Table {
 		fmt.Printf("Computer name: %s Port: %d  -> ", comp, node.Vertex.Port)
-		adjacent := node.Adjacent
-		for adjacent != nil {
-			fmt.Printf("%s ", adjacent.Vertex.Comp)
-			adjacent = adjacent.Next
+		//adjacent := node.Adjacent
+		for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
+			adjacent_vertex := elem.Value.(*AdjacentVertex)
+			fmt.Printf("%s -> ", adjacent_vertex.Vertex.Comp)
 		}
 		fmt.Printf("\n")
 	}
