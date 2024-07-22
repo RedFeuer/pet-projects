@@ -68,7 +68,7 @@ func Create_vertex(comp string, port uint) *Vertex {
 }
 
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
-	/*проверка: одного из элементов нет*/
+	/*проверка: одной из вершин нет*/
 	if graph.Table[comp_src] == nil || graph.Table[comp_dst] == nil {
 		return 1
 	}
@@ -76,8 +76,10 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	if graph.Table[comp_src] == graph.Table[comp_dst] {
 		return 2
 	}
-	/*проверка: между соединяемыми вершинами не существует ребра
-	ДОПИСАТЬ!!!!!*/
+	/*проверка: между соединяемыми вершинами не существует ребра*/
+	if graph.Table[comp_src].Adjacent != nil || graph.Table[comp_dst].Adjacent != nil {
+		return 3
+	}
 
 	/*соединяем основную вершину со смежной: src -> dst*/
 	if graph.Table[comp_src].Adjacent == nil {
@@ -128,7 +130,9 @@ func D2_Insert_Edge(graph *Graph) {
 	case 1:
 		fmt.Println("Error: There no such vertex in graph")
 	case 2:
-		fmt.Println("Error: can't connect twice")
+		fmt.Println("Error: can't connect vertex to itself")
+	case 3:
+		fmt.Println("Error: can't connect vertices that have been already connected")
 	}
 }
 
