@@ -179,6 +179,30 @@ func Remove_Vertex_Logic(graph *Graph, comp_remove string) int {
 	return 0
 }
 
+func Change_Edge_Logic(graph *Graph, comp_src string, comp_dst string, new_ports_count uint, new_ports []uint) int {
+	new_edge := &Edge{new_ports, new_ports_count}
+
+	elem_src := Find_adjacent_vertex(graph, comp_src, comp_dst)
+	if elem_src == nil {
+		return 1
+	}
+	adjacent_vertex_src := elem_src.Value.(*AdjacentVertex)
+	if adjacent_vertex_src.Vertex.Comp == comp_dst {
+		adjacent_vertex_src.Edge = new_edge
+	}
+
+	elem_dst := Find_adjacent_vertex(graph, comp_dst, comp_src)
+	if elem_dst == nil {
+		return 1
+	}
+	adjacent_vertex_dst := elem_dst.Value.(*AdjacentVertex)
+	if adjacent_vertex_dst.Vertex.Comp == comp_src {
+		adjacent_vertex_dst.Edge = new_edge
+	}
+
+	return 0
+}
+
 func D1_Insert_Vertex(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
@@ -237,6 +261,24 @@ func D4_Remove_Edge(graph *Graph) {
 		fmt.Printf("Error: There no computer with name %s\n", comp_dst)
 	case 3:
 		fmt.Printf("Error: There is no edge between %s and %s \n", comp_src, comp_dst)
+	}
+}
+
+func D6_Change_Edge(graph *Graph) {
+	reader := bufio.NewReader(os.Stdin)
+	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
+	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
+	new_ports_count := Read_integer(reader, "Enter number of ports: ")
+
+	new_ports := make([]uint, new_ports_count)
+	for i := 0; i < int(new_ports_count); i++ {
+		new_ports[i] = Read_integer(reader, "Enter port: ")
+	}
+
+	termination_status := Change_Edge_Logic(graph, comp_src, comp_dst, new_ports_count, new_ports)
+	switch termination_status {
+	case 1:
+		fmt.Printf("Error: There no edge between %s and %s \n", comp_src, comp_dst)
 	}
 }
 
@@ -334,6 +376,8 @@ func main() {
 			D3_Remove_Vertex(graph)
 		case 4:
 			D4_Remove_Edge(graph)
+		case 6:
+			D6_Change_Edge(graph)
 		case 7:
 			D7_Output_as_adjacency_list(graph)
 		}
