@@ -68,8 +68,9 @@ func Create_vertex(comp string, port uint) *Vertex {
 }
 
 /*эта функция ищет, если ли у данной вершины с именем comp_src смежная вершина с именем comp_dst*/
-/*возвращает смежную вершину с именем comp_dst*/
-func Find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) *AdjacentVertex {
+/*возвращает элемент из списка, содержащий в поле value вершину с именем comp_dst*/
+/*чтобы получить *AdjacentVertex, нужно сделать elem.value.(*AdjacentVertex)*/
+func Find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) *list.Element {
 	for comp, node := range graph.Table {
 		if comp == comp_src {
 			if node.Adjacent == nil {
@@ -78,7 +79,7 @@ func Find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) *Adjac
 			for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
 				adjacent_vertex := elem.Value.(*AdjacentVertex)
 				if adjacent_vertex.Vertex.Comp == comp_dst {
-					return adjacent_vertex
+					return elem
 				}
 			}
 			/*скорее всего return 1 лучше сделать тут, чтобы быстрее работало*/
@@ -129,11 +130,25 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 
 func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
 	/*ДЕЛАТЬ ПРОВЕРКИ*/
+	if graph.Table[comp_src] == nil {
+		return 1
+	}
+	if graph.Table[comp_dst] == nil {
+		return 2
+	}
 
 	elem_remove_src := Find_adjacent_vertex(graph, comp_src, comp_dst)
-	graph.Table[comp_src].Adjacent.Remove(*list.Element(elem_remove_src))
+	if elem_remove_src == nil {
+		return 3
+	}
+	graph.Table[comp_src].Adjacent.Remove(elem_remove_src)
 
+	elem_remove_dst := Find_adjacent_vertex(graph, comp_dst, comp_src)
+	if elem_remove_dst == nil {
+		return 3
+	}
 	graph.Table[comp_dst].Adjacent.Remove(elem_remove_dst)
+	return 0
 }
 
 func D1_Insert_Vertex(graph *Graph) {
@@ -176,7 +191,12 @@ func D4_Remove_Edge(graph *Graph) {
 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
 	termination_status := Remove_Edge_Logic(graph, comp_src, comp_dst)
 	switch termination_status {
-
+	case 1:
+		fmt.Printf("Error: There no computer with name %s\n", comp_src)
+	case 2:
+		fmt.Printf("Error: There no computer with name %s\n", comp_dst)
+	case 3:
+		fmt.Printf("Error: There is no edge between %s and %s \n", comp_src, comp_dst)
 	}
 }
 
@@ -270,6 +290,8 @@ func main() {
 			D1_Insert_Vertex(graph)
 		case 2:
 			D2_Insert_Edge(graph)
+		case 4:
+			D4_Remove_Edge(graph)
 		case 7:
 			D7_Output_as_adjacency_list(graph)
 		}
