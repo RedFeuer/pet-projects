@@ -105,16 +105,19 @@ func Remove_Adjacent_Vertex(graph *Graph, comp_remove string) {
 
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
 	/*проверка: одной из вершин нет*/
-	if graph.Table[comp_src] == nil || graph.Table[comp_dst] == nil {
+	if graph.Table[comp_src] == nil {
 		return 1
+	}
+	if graph.Table[comp_dst] == nil {
+		return 2
 	}
 	/*проверка: не соединяем одинаковые вершины*/
 	if graph.Table[comp_src] == graph.Table[comp_dst] {
-		return 2
+		return 3
 	}
 	/*проверка: между соединяемыми вершинами не существует ребра*/
 	if Find_adjacent_vertex(graph, comp_src, comp_dst) != nil || Find_adjacent_vertex(graph, comp_dst, comp_src) != nil {
-		return 3
+		return 4
 	}
 	//if graph.Table[comp_src].Adjacent != nil && graph.Table[comp_dst].Adjacent != nil {
 	//	return 3
@@ -202,10 +205,12 @@ func D2_Insert_Edge(graph *Graph) {
 	default:
 		break
 	case 1:
-		fmt.Println("Error: There no such vertex in graph")
+		fmt.Printf("Error: There no computer with name %s in computer network", comp_src)
 	case 2:
-		fmt.Println("Error: can't connect vertex to itself")
+		fmt.Printf("Error: There no computer with name %s in computer network", comp_dst)
 	case 3:
+		fmt.Println("Error: can't connect vertex to itself")
+	case 4:
 		fmt.Println("Error: can't connect vertices that have been already connected")
 	}
 }
