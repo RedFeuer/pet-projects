@@ -90,6 +90,19 @@ func Find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) *list.
 	return nil
 }
 
+func Remove_Adjacent_Vertex(graph *Graph, comp_remove string) {
+	for _, node := range graph.Table {
+		if node.Adjacent != nil {
+			for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
+				adjacent_vertex := elem.Value.(*AdjacentVertex)
+				if adjacent_vertex.Vertex.Comp == comp_remove {
+					node.Adjacent.Remove(elem)
+				}
+			}
+		}
+	}
+}
+
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
 	/*проверка: одной из вершин нет*/
 	if graph.Table[comp_src] == nil || graph.Table[comp_dst] == nil {
@@ -152,8 +165,15 @@ func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
 }
 
 func Remove_Vertex_Logic(graph *Graph, comp_remove string) int {
+	if graph.Table[comp_remove] == nil {
+		return 1
+	}
+
 	/*посредством Find_adjacent_vertex нужно проверить все связи с другими вершинами и удалить их*/
-	/*удалить саму вершину*/
+	Remove_Adjacent_Vertex(graph, comp_remove)
+	/*удалить саму вершину из хэш-таблицы*/
+	delete(graph.Table, comp_remove)
+	return 0
 }
 
 func D1_Insert_Vertex(graph *Graph) {
@@ -195,7 +215,8 @@ func D3_Remove_Vertex(graph *Graph) {
 	comp_remove := Read_non_empty_string(reader, "Enter computer name: ")
 	termination_status := Remove_Vertex_Logic(graph, comp_remove)
 	switch termination_status {
-
+	case 1:
+		fmt.Println("Error: There no such computer in computer network")
 	}
 }
 
@@ -304,6 +325,8 @@ func main() {
 			D1_Insert_Vertex(graph)
 		case 2:
 			D2_Insert_Edge(graph)
+		case 3:
+			D3_Remove_Vertex(graph)
 		case 4:
 			D4_Remove_Edge(graph)
 		case 7:
