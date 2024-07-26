@@ -151,6 +151,11 @@ func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
 	return 0
 }
 
+func Remove_Vertex_Logic(graph *Graph, comp_remove string) int {
+	/*посредством Find_adjacent_vertex нужно проверить все связи с другими вершинами и удалить их*/
+	/*удалить саму вершину*/
+}
+
 func D1_Insert_Vertex(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
@@ -182,6 +187,15 @@ func D2_Insert_Edge(graph *Graph) {
 		fmt.Println("Error: can't connect vertex to itself")
 	case 3:
 		fmt.Println("Error: can't connect vertices that have been already connected")
+	}
+}
+
+func D3_Remove_Vertex(graph *Graph) {
+	reader := bufio.NewReader(os.Stdin)
+	comp_remove := Read_non_empty_string(reader, "Enter computer name: ")
+	termination_status := Remove_Vertex_Logic(graph, comp_remove)
+	switch termination_status {
+
 	}
 }
 
