@@ -203,6 +203,59 @@ func Change_Edge_Logic(graph *Graph, comp_src string, comp_dst string, new_ports
 	return 0
 }
 
+func Create_Dot_File(graph *Graph, filename string) int {
+	file, err := os.Create(filename)
+	if err != nil {
+		return 1
+		//return err
+	}
+	defer file.Close()
+
+	file.WriteString("graph G {\n")
+
+	/*хэш-таблица(map) уже записанных в файл вершин*/
+	vertices := make(map[string]bool)
+
+	/*хэш-таблица(map) уже записанных в файл ребер*/
+	edges := make(map[string]bool)
+
+	for _, node := range graph.Table {
+		/*записываем основную вершину из хэш-таблицы*/
+		if vertices[node.Vertex.Comp] == false {
+			file.WriteString(fmt.Sprintf("  \"%s\" [label=\"%s : %d\"];\n", node.Vertex.Comp, node.Vertex.Comp, node.Vertex.Port))
+			vertices[node.Vertex.Comp] = true
+		}
+
+		/*записываем смежные вершины из списка для основной вершины*/
+		if node.Adjacent != nil {
+			for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
+				adjacent_vertex := elem.Value.(*AdjacentVertex)
+
+				// Создаём ключ для ребра в виде "vertex1-vertex2" и "vertex2-vertex1"
+				edge_key1 := fmt.Sprintf("%s-%s", node.Vertex.Comp, adjacent_vertex.Vertex.Comp)
+				edge_key2 := fmt.Sprintf("%s-%s", adjacent_vertex.Vertex.Comp, node.Vertex.Comp)
+				if edges[edge_key1] == false && edges[edge_key2] == false {
+					file.WriteString(fmt.Sprintf("  \"%s\" -- \"%s\" [label=\"%v\"];\n", node.Vertex.Comp, adjacent_vertex.Vertex.Comp, adjacent_vertex.Edge.Ports))
+					edges[edge_key1] = true
+					edges[edge_key2] = true
+				}
+				//if vertices[adjacent_vertex.Vertex.Comp] == false {
+				//	file.WriteString(fmt.Sprintf("  \"%s\" [label=\"%s : %d\"];\n", adjacent_vertex.Vertex.Comp, adjacent_vertex.Vertex.Comp, adjacent_vertex.Vertex.Port))
+				//	vertices[adjacent_vertex.Vertex.Comp] = true
+				//}
+				//if edges[node.Vertex.Comp] == false && edges[adjacent_vertex.Vertex.Comp] == false {
+				//	file.WriteString(fmt.Sprintf("  \"%s\" -> \"%s\" [label=\"%v\"];\n", node.Vertex.Comp, adjacent_vertex.Vertex.Comp, adjacent_vertex.Edge.Ports))
+				//	edges[node.Vertex.Comp] = true
+				//}
+				// file.WriteString(fmt.Sprintf("  \"%s\" -- \"%s\" [label=\"%v\"];\n", node.Vertex.Comp, adjacent_vertex.Vertex.Comp, adjacent_vertex.Edge.Ports))
+			}
+		}
+	}
+	file.WriteString("}\n")
+	return 0
+	//return nil
+}
+
 func D1_Insert_Vertex(graph *Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
@@ -297,6 +350,16 @@ func D7_Output_as_adjacency_list(graph *Graph) {
 	}
 }
 
+func D8_Graphviz_Output(graph *Graph) {
+	reader := bufio.NewReader(os.Stdin)
+	filename := Read_non_empty_string(reader, "Enter filename: ")
+	termination_status := Create_Dot_File(graph, filename)
+	switch termination_status {
+	case 1:
+		fmt.Println("Error")
+	}
+}
+
 func Read_non_empty_string(reader *bufio.Reader, prompt string) string {
 	var result string
 	var err error
@@ -380,6 +443,8 @@ func main() {
 			D6_Change_Edge(graph)
 		case 7:
 			D7_Output_as_adjacency_list(graph)
+		case 8:
+			D8_Graphviz_Output(graph)
 		}
 	}
 }
