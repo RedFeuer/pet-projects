@@ -119,9 +119,6 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	if Find_adjacent_vertex(graph, comp_src, comp_dst) != nil || Find_adjacent_vertex(graph, comp_dst, comp_src) != nil {
 		return 4
 	}
-	//if graph.Table[comp_src].Adjacent != nil && graph.Table[comp_dst].Adjacent != nil {
-	//	return 3
-	//}
 
 	/*соединяем основную вершину со смежной: src -> dst*/
 	if graph.Table[comp_src].Adjacent == nil {
@@ -239,15 +236,6 @@ func Create_Dot_File(graph *Graph, filename string) int {
 					edges[edge_key1] = true
 					edges[edge_key2] = true
 				}
-				//if vertices[adjacent_vertex.Vertex.Comp] == false {
-				//	file.WriteString(fmt.Sprintf("  \"%s\" [label=\"%s : %d\"];\n", adjacent_vertex.Vertex.Comp, adjacent_vertex.Vertex.Comp, adjacent_vertex.Vertex.Port))
-				//	vertices[adjacent_vertex.Vertex.Comp] = true
-				//}
-				//if edges[node.Vertex.Comp] == false && edges[adjacent_vertex.Vertex.Comp] == false {
-				//	file.WriteString(fmt.Sprintf("  \"%s\" -> \"%s\" [label=\"%v\"];\n", node.Vertex.Comp, adjacent_vertex.Vertex.Comp, adjacent_vertex.Edge.Ports))
-				//	edges[node.Vertex.Comp] = true
-				//}
-				// file.WriteString(fmt.Sprintf("  \"%s\" -- \"%s\" [label=\"%v\"];\n", node.Vertex.Comp, adjacent_vertex.Vertex.Comp, adjacent_vertex.Edge.Ports))
 			}
 		}
 	}
