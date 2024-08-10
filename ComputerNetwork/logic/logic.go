@@ -1,13 +1,13 @@
 package logic
 
 import (
-	// g "github.com/RedFeuer/pet-projects/ComputerNetwork/internal"
+	"ComputerNetwork/internal"
 	"container/list"
 	"fmt"
 	"os"
 )
 
-func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
+func Insert_Edge_logic(graph *internal.Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
 	/*проверка: одной из вершин нет*/
 	if graph.Table[comp_src] == nil {
 		return 1
@@ -20,7 +20,7 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 		return 3
 	}
 	/*проверка: между соединяемыми вершинами не существует ребра*/
-	if Find_adjacent_vertex(graph, comp_src, comp_dst) != nil || Find_adjacent_vertex(graph, comp_dst, comp_src) != nil {
+	if internal.Find_adjacent_vertex(graph, comp_src, comp_dst) != nil || internal.Find_adjacent_vertex(graph, comp_dst, comp_src) != nil {
 		return 4
 	}
 
@@ -28,8 +28,8 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	if graph.Table[comp_src].Adjacent == nil {
 		graph.Table[comp_src].Adjacent = list.New()
 	}
-	new_adjacent_for_src := &AdjacentVertex{}
-	new_adjacent_for_src.Edge = &Edge{ports, ports_count}
+	new_adjacent_for_src := &internal.AdjacentVertex{}
+	new_adjacent_for_src.Edge = &internal.Edge{ports, ports_count}
 	new_adjacent_for_src.Vertex = graph.Table[comp_dst].Vertex
 	graph.Table[comp_src].Adjacent.PushBack(new_adjacent_for_src)
 
@@ -37,15 +37,15 @@ func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_cou
 	if graph.Table[comp_dst].Adjacent == nil {
 		graph.Table[comp_dst].Adjacent = list.New()
 	}
-	new_adjacent_for_dst := &AdjacentVertex{}
-	new_adjacent_for_dst.Edge = &Edge{ports, ports_count}
+	new_adjacent_for_dst := &internal.AdjacentVertex{}
+	new_adjacent_for_dst.Edge = &internal.Edge{ports, ports_count}
 	new_adjacent_for_dst.Vertex = graph.Table[comp_src].Vertex
 	graph.Table[comp_dst].Adjacent.PushBack(new_adjacent_for_dst)
 
 	return 0
 }
 
-func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
+func Remove_Edge_Logic(graph *internal.Graph, comp_src string, comp_dst string) int {
 	/*ДЕЛАТЬ ПРОВЕРКИ*/
 	if graph.Table[comp_src] == nil {
 		return 1
@@ -54,13 +54,13 @@ func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
 		return 2
 	}
 
-	elem_remove_src := Find_adjacent_vertex(graph, comp_src, comp_dst)
+	elem_remove_src := internal.Find_adjacent_vertex(graph, comp_src, comp_dst)
 	if elem_remove_src == nil {
 		return 3
 	}
 	graph.Table[comp_src].Adjacent.Remove(elem_remove_src)
 
-	elem_remove_dst := Find_adjacent_vertex(graph, comp_dst, comp_src)
+	elem_remove_dst := internal.Find_adjacent_vertex(graph, comp_dst, comp_src)
 	if elem_remove_dst == nil {
 		return 3
 	}
@@ -68,35 +68,35 @@ func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
 	return 0
 }
 
-func Remove_Vertex_Logic(graph *Graph, comp_remove string) int {
+func Remove_Vertex_Logic(graph *internal.Graph, comp_remove string) int {
 	if graph.Table[comp_remove] == nil {
 		return 1
 	}
 
 	/*посредством Find_adjacent_vertex нужно проверить все связи с другими вершинами и удалить их*/
-	Remove_Adjacent_Vertex(graph, comp_remove)
+	internal.Remove_Adjacent_Vertex(graph, comp_remove)
 	/*удалить саму вершину из хэш-таблицы*/
 	delete(graph.Table, comp_remove)
 	return 0
 }
 
-func Change_Edge_Logic(graph *Graph, comp_src string, comp_dst string, new_ports_count uint, new_ports []uint) int {
-	new_edge := &Edge{new_ports, new_ports_count}
+func Change_Edge_Logic(graph *internal.Graph, comp_src string, comp_dst string, new_ports_count uint, new_ports []uint) int {
+	new_edge := &internal.Edge{new_ports, new_ports_count}
 
-	elem_src := Find_adjacent_vertex(graph, comp_src, comp_dst)
+	elem_src := internal.Find_adjacent_vertex(graph, comp_src, comp_dst)
 	if elem_src == nil {
 		return 1
 	}
-	adjacent_vertex_src := elem_src.Value.(*AdjacentVertex)
+	adjacent_vertex_src := elem_src.Value.(*internal.AdjacentVertex)
 	if adjacent_vertex_src.Vertex.Comp == comp_dst {
 		adjacent_vertex_src.Edge = new_edge
 	}
 
-	elem_dst := Find_adjacent_vertex(graph, comp_dst, comp_src)
+	elem_dst := internal.Find_adjacent_vertex(graph, comp_dst, comp_src)
 	if elem_dst == nil {
 		return 1
 	}
-	adjacent_vertex_dst := elem_dst.Value.(*AdjacentVertex)
+	adjacent_vertex_dst := elem_dst.Value.(*internal.AdjacentVertex)
 	if adjacent_vertex_dst.Vertex.Comp == comp_src {
 		adjacent_vertex_dst.Edge = new_edge
 	}
@@ -104,7 +104,7 @@ func Change_Edge_Logic(graph *Graph, comp_src string, comp_dst string, new_ports
 	return 0
 }
 
-func Create_Dot_File(graph *Graph, filename string) int {
+func Create_Dot_File(graph *internal.Graph, filename string) int {
 	file, err := os.Create(filename)
 	if err != nil {
 		return 1
@@ -130,7 +130,7 @@ func Create_Dot_File(graph *Graph, filename string) int {
 		/*записываем смежные вершины из списка для основной вершины*/
 		if node.Adjacent != nil {
 			for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
-				adjacent_vertex := elem.Value.(*AdjacentVertex)
+				adjacent_vertex := elem.Value.(*internal.AdjacentVertex)
 
 				// Создаём ключ для ребра в виде "vertex1-vertex2" и "vertex2-vertex1"
 				edge_key1 := fmt.Sprintf("%s-%s", node.Vertex.Comp, adjacent_vertex.Vertex.Comp)
