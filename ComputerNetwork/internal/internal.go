@@ -20,7 +20,6 @@ type Edge struct {
 type AdjacentVertex struct {
 	Vertex *Vertex // Указатель на данную смежную вершину
 	Edge   *Edge   // Указатель на ребро, соединяющее основную и смежную к ней вершины
-	// Next   *AdjacentVertex // Следующая в списке смежная вершина(смежная к основной)
 }
 
 type Node struct {
