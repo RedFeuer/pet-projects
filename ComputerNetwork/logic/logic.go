@@ -112,7 +112,7 @@ func Create_Dot_File(graph *internal.Graph, filename string) int {
 	}
 	defer file.Close()
 
-	file.WriteString("internal G {\n")
+	file.WriteString("graph G {\n")
 
 	/*хэш-таблица(map) уже записанных в файл вершин*/
 	vertices := make(map[string]bool)
