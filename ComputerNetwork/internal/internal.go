@@ -1,4 +1,6 @@
-package graph
+package internal
+
+import "container/list"
 
 type Vertex struct {
 	Comp      string // уникальное имя компьютера

@@ -2,7 +2,7 @@ package main
 
 import (
 	"ComputerNetwork/dialog"
-	"ComputerNetwork/graph"
+	"ComputerNetwork/internal"
 	"bufio"
 	"fmt"
 	"os"
@@ -69,8 +69,8 @@ import (
 // /*эта функция ищет, если ли у данной вершины с именем comp_src смежная вершина с именем comp_dst*/
 // /*возвращает элемент из списка, содержащий в поле value вершину с именем comp_dst*/
 // /*чтобы получить *AdjacentVertex, нужно сделать elem.value.(*AdjacentVertex)*/
-// func Find_adjacent_vertex(graph *Graph, comp_src string, comp_dst string) *list.Element {
-// 	for comp, node := range graph.Table {
+// func Find_adjacent_vertex(internal *Graph, comp_src string, comp_dst string) *list.Element {
+// 	for comp, node := range internal.Table {
 // 		if comp == comp_src {
 // 			if node.Adjacent == nil {
 // 				return nil
@@ -89,8 +89,8 @@ import (
 // 	return nil
 // }
 
-// func Remove_Adjacent_Vertex(graph *Graph, comp_remove string) {
-// 	for _, node := range graph.Table {
+// func Remove_Adjacent_Vertex(internal *Graph, comp_remove string) {
+// 	for _, node := range internal.Table {
 // 		if node.Adjacent != nil {
 // 			for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
 // 				adjacent_vertex := elem.Value.(*AdjacentVertex)
@@ -102,83 +102,83 @@ import (
 // 	}
 // }
 
-// func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
+// func Insert_Edge_logic(internal *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
 // 	/*проверка: одной из вершин нет*/
-// 	if graph.Table[comp_src] == nil {
+// 	if internal.Table[comp_src] == nil {
 // 		return 1
 // 	}
-// 	if graph.Table[comp_dst] == nil {
+// 	if internal.Table[comp_dst] == nil {
 // 		return 2
 // 	}
 // 	/*проверка: не соединяем одинаковые вершины*/
-// 	if graph.Table[comp_src] == graph.Table[comp_dst] {
+// 	if internal.Table[comp_src] == internal.Table[comp_dst] {
 // 		return 3
 // 	}
 // 	/*проверка: между соединяемыми вершинами не существует ребра*/
-// 	if Find_adjacent_vertex(graph, comp_src, comp_dst) != nil || Find_adjacent_vertex(graph, comp_dst, comp_src) != nil {
+// 	if Find_adjacent_vertex(internal, comp_src, comp_dst) != nil || Find_adjacent_vertex(internal, comp_dst, comp_src) != nil {
 // 		return 4
 // 	}
 
 // 	/*соединяем основную вершину со смежной: src -> dst*/
-// 	if graph.Table[comp_src].Adjacent == nil {
-// 		graph.Table[comp_src].Adjacent = list.New()
+// 	if internal.Table[comp_src].Adjacent == nil {
+// 		internal.Table[comp_src].Adjacent = list.New()
 // 	}
 // 	new_adjacent_for_src := &AdjacentVertex{}
 // 	new_adjacent_for_src.Edge = &Edge{ports, ports_count}
-// 	new_adjacent_for_src.Vertex = graph.Table[comp_dst].Vertex
-// 	graph.Table[comp_src].Adjacent.PushBack(new_adjacent_for_src)
+// 	new_adjacent_for_src.Vertex = internal.Table[comp_dst].Vertex
+// 	internal.Table[comp_src].Adjacent.PushBack(new_adjacent_for_src)
 
 // 	/*обратное соединение: dst -> src*/
-// 	if graph.Table[comp_dst].Adjacent == nil {
-// 		graph.Table[comp_dst].Adjacent = list.New()
+// 	if internal.Table[comp_dst].Adjacent == nil {
+// 		internal.Table[comp_dst].Adjacent = list.New()
 // 	}
 // 	new_adjacent_for_dst := &AdjacentVertex{}
 // 	new_adjacent_for_dst.Edge = &Edge{ports, ports_count}
-// 	new_adjacent_for_dst.Vertex = graph.Table[comp_src].Vertex
-// 	graph.Table[comp_dst].Adjacent.PushBack(new_adjacent_for_dst)
+// 	new_adjacent_for_dst.Vertex = internal.Table[comp_src].Vertex
+// 	internal.Table[comp_dst].Adjacent.PushBack(new_adjacent_for_dst)
 
 // 	return 0
 // }
 
-// func Remove_Edge_Logic(graph *Graph, comp_src string, comp_dst string) int {
+// func Remove_Edge_Logic(internal *Graph, comp_src string, comp_dst string) int {
 // 	/*ДЕЛАТЬ ПРОВЕРКИ*/
-// 	if graph.Table[comp_src] == nil {
+// 	if internal.Table[comp_src] == nil {
 // 		return 1
 // 	}
-// 	if graph.Table[comp_dst] == nil {
+// 	if internal.Table[comp_dst] == nil {
 // 		return 2
 // 	}
 
-// 	elem_remove_src := Find_adjacent_vertex(graph, comp_src, comp_dst)
+// 	elem_remove_src := Find_adjacent_vertex(internal, comp_src, comp_dst)
 // 	if elem_remove_src == nil {
 // 		return 3
 // 	}
-// 	graph.Table[comp_src].Adjacent.Remove(elem_remove_src)
+// 	internal.Table[comp_src].Adjacent.Remove(elem_remove_src)
 
-// 	elem_remove_dst := Find_adjacent_vertex(graph, comp_dst, comp_src)
+// 	elem_remove_dst := Find_adjacent_vertex(internal, comp_dst, comp_src)
 // 	if elem_remove_dst == nil {
 // 		return 3
 // 	}
-// 	graph.Table[comp_dst].Adjacent.Remove(elem_remove_dst)
+// 	internal.Table[comp_dst].Adjacent.Remove(elem_remove_dst)
 // 	return 0
 // }
 
-// func Remove_Vertex_Logic(graph *Graph, comp_remove string) int {
-// 	if graph.Table[comp_remove] == nil {
+// func Remove_Vertex_Logic(internal *Graph, comp_remove string) int {
+// 	if internal.Table[comp_remove] == nil {
 // 		return 1
 // 	}
 
 // 	/*посредством Find_adjacent_vertex нужно проверить все связи с другими вершинами и удалить их*/
-// 	Remove_Adjacent_Vertex(graph, comp_remove)
+// 	Remove_Adjacent_Vertex(internal, comp_remove)
 // 	/*удалить саму вершину из хэш-таблицы*/
-// 	delete(graph.Table, comp_remove)
+// 	delete(internal.Table, comp_remove)
 // 	return 0
 // }
 
-// func Change_Edge_Logic(graph *Graph, comp_src string, comp_dst string, new_ports_count uint, new_ports []uint) int {
+// func Change_Edge_Logic(internal *Graph, comp_src string, comp_dst string, new_ports_count uint, new_ports []uint) int {
 // 	new_edge := &Edge{new_ports, new_ports_count}
 
-// 	elem_src := Find_adjacent_vertex(graph, comp_src, comp_dst)
+// 	elem_src := Find_adjacent_vertex(internal, comp_src, comp_dst)
 // 	if elem_src == nil {
 // 		return 1
 // 	}
@@ -187,7 +187,7 @@ import (
 // 		adjacent_vertex_src.Edge = new_edge
 // 	}
 
-// 	elem_dst := Find_adjacent_vertex(graph, comp_dst, comp_src)
+// 	elem_dst := Find_adjacent_vertex(internal, comp_dst, comp_src)
 // 	if elem_dst == nil {
 // 		return 1
 // 	}
@@ -199,7 +199,7 @@ import (
 // 	return 0
 // }
 
-// func Create_Dot_File(graph *Graph, filename string) int {
+// func Create_Dot_File(internal *Graph, filename string) int {
 // 	file, err := os.Create(filename)
 // 	if err != nil {
 // 		return 1
@@ -207,7 +207,7 @@ import (
 // 	}
 // 	defer file.Close()
 
-// 	file.WriteString("graph G {\n")
+// 	file.WriteString("internal G {\n")
 
 // 	/*хэш-таблица(map) уже записанных в файл вершин*/
 // 	vertices := make(map[string]bool)
@@ -215,7 +215,7 @@ import (
 // 	/*хэш-таблица(map) уже записанных в файл ребер*/
 // 	edges := make(map[string]bool)
 
-// 	for _, node := range graph.Table {
+// 	for _, node := range internal.Table {
 // 		/*записываем основную вершину из хэш-таблицы*/
 // 		if vertices[node.Vertex.Comp] == false {
 // 			file.WriteString(fmt.Sprintf("  \"%s\" [label=\"%s : %d\"];\n", node.Vertex.Comp, node.Vertex.Comp, node.Vertex.Port))
@@ -243,17 +243,17 @@ import (
 // 	//return nil
 // }
 
-// func D1_Insert_Vertex(graph *Graph) {
+// func D1_Insert_Vertex(internal *Graph) {
 // 	reader := bufio.NewReader(os.Stdin)
 // 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
 // 	fmt.Printf("Enter number of port for computer %s", comp)
 // 	port := Read_integer(reader, ": ")
 // 	new_vertex := Create_vertex(comp, port)
 // 	new_node := Initialize_node(new_vertex)
-// 	graph.Table[comp] = new_node
+// 	internal.Table[comp] = new_node
 // }
 
-// func D2_Insert_Edge(graph *Graph) {
+// func D2_Insert_Edge(internal *Graph) {
 // 	reader := bufio.NewReader(os.Stdin)
 // 	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
 // 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
@@ -264,7 +264,7 @@ import (
 // 		ports[i] = Read_integer(reader, "Enter port: ")
 // 	}
 
-// 	termination_status := Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
+// 	termination_status := Insert_Edge_logic(internal, comp_src, comp_dst, ports_count, ports)
 // 	switch termination_status {
 // 	default:
 // 		break
@@ -279,21 +279,21 @@ import (
 // 	}
 // }
 
-// func D3_Remove_Vertex(graph *Graph) {
+// func D3_Remove_Vertex(internal *Graph) {
 // 	reader := bufio.NewReader(os.Stdin)
 // 	comp_remove := Read_non_empty_string(reader, "Enter computer name: ")
-// 	termination_status := Remove_Vertex_Logic(graph, comp_remove)
+// 	termination_status := Remove_Vertex_Logic(internal, comp_remove)
 // 	switch termination_status {
 // 	case 1:
 // 		fmt.Println("Error: There no such computer in computer network")
 // 	}
 // }
 
-// func D4_Remove_Edge(graph *Graph) {
+// func D4_Remove_Edge(internal *Graph) {
 // 	reader := bufio.NewReader(os.Stdin)
 // 	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
 // 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
-// 	termination_status := Remove_Edge_Logic(graph, comp_src, comp_dst)
+// 	termination_status := Remove_Edge_Logic(internal, comp_src, comp_dst)
 // 	switch termination_status {
 // 	case 1:
 // 		fmt.Printf("Error: There no computer with name %s\n", comp_src)
@@ -304,7 +304,7 @@ import (
 // 	}
 // }
 
-// func D6_Change_Edge(graph *Graph) {
+// func D6_Change_Edge(internal *Graph) {
 // 	reader := bufio.NewReader(os.Stdin)
 // 	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
 // 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
@@ -315,15 +315,15 @@ import (
 // 		new_ports[i] = Read_integer(reader, "Enter port: ")
 // 	}
 
-// 	termination_status := Change_Edge_Logic(graph, comp_src, comp_dst, new_ports_count, new_ports)
+// 	termination_status := Change_Edge_Logic(internal, comp_src, comp_dst, new_ports_count, new_ports)
 // 	switch termination_status {
 // 	case 1:
 // 		fmt.Printf("Error: There no edge between %s and %s \n", comp_src, comp_dst)
 // 	}
 // }
 
-// func D7_Output_as_adjacency_list(graph *Graph) {
-// 	for comp, node := range graph.Table {
+// func D7_Output_as_adjacency_list(internal *Graph) {
+// 	for comp, node := range internal.Table {
 // 		fmt.Printf("Computer name: %s Port: %d  ", comp, node.Vertex.Port)
 // 		if node.Adjacent == nil {
 // 			fmt.Printf("\n")
@@ -337,10 +337,10 @@ import (
 // 	}
 // }
 
-// func D8_Graphviz_Output(graph *Graph) {
+// func D8_Graphviz_Output(internal *Graph) {
 // 	reader := bufio.NewReader(os.Stdin)
 // 	filename := Read_non_empty_string(reader, "Enter filename: ")
-// 	termination_status := Create_Dot_File(graph, filename)
+// 	termination_status := Create_Dot_File(internal, filename)
 // 	switch termination_status {
 // 	case 1:
 // 		fmt.Println("Error")
@@ -396,16 +396,16 @@ import (
 // 	fmt.Printf("4. Remove edge\n")
 // 	fmt.Printf("5. Change vertex\n")
 // 	fmt.Printf("6. Change edge\n")
-// 	fmt.Printf("7. Output graph as adjacency list\n")
+// 	fmt.Printf("7. Output internal as adjacency list\n")
 // 	fmt.Printf("8. Graphical output\n")
 // 	fmt.Printf("9. Graph traversal:BFS\n")
-// 	fmt.Printf("10. Find the shortest path between two vertices of a graph\n")
+// 	fmt.Printf("10. Find the shortest path between two vertices of a internal\n")
 // 	fmt.Printf("11. Special operation: partitioning into connected components\n")
 // }
 
 func main() {
 	/*создаем граф*/
-	graph := graph.Create_graph()
+	graph := internal.Create_graph()
 
 	var flag int = 1
 	for flag == 1 {
