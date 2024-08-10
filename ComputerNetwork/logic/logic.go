@@ -150,6 +150,8 @@ func Create_Dot_File(graph *internal.Graph, filename string) int {
 }
 
 func BFS(graph *internal.Graph, source string) {
+	/*ЗАКОНЧИЛ ЗДЕСЬ
+	СДЕЛАТЬ ТАК, ЧТОБЫ ИСКАЛО КРАТЧАЙШИЙ ПУТЬ ДО УКАЗАННОГО ПОРТА, УЧИТЫВАЮ ДОПУСТИМЫЕ ДЛЯ ПРОХОДА ПО РЕБРУ ПОРТЫ*/
 	for _, node := range graph.Table {
 		if node.Vertex.Comp == source {
 			continue
