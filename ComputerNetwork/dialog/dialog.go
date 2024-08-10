@@ -1,16 +1,25 @@
 package dialog
 
-func D1_Insert_Vertex(graph *Graph) {
+import (
+	"ComputerNetwork/internal"
+	"ComputerNetwork/logic"
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func D1_Insert_Vertex(graph *internal.Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
 	fmt.Printf("Enter number of port for computer %s", comp)
 	port := Read_integer(reader, ": ")
-	new_vertex := Create_vertex(comp, port)
-	new_node := Initialize_node(new_vertex)
+	new_vertex := internal.Create_vertex(comp, port)
+	new_node := internal.Initialize_node(new_vertex)
 	graph.Table[comp] = new_node
 }
 
-func D2_Insert_Edge(graph *Graph) {
+func D2_Insert_Edge(graph *internal.Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
@@ -21,7 +30,7 @@ func D2_Insert_Edge(graph *Graph) {
 		ports[i] = Read_integer(reader, "Enter port: ")
 	}
 
-	termination_status := Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
+	termination_status := logic.Insert_Edge_logic(graph, comp_src, comp_dst, ports_count, ports)
 	switch termination_status {
 	default:
 		break
@@ -36,21 +45,21 @@ func D2_Insert_Edge(graph *Graph) {
 	}
 }
 
-func D3_Remove_Vertex(graph *Graph) {
+func D3_Remove_Vertex(graph *internal.Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp_remove := Read_non_empty_string(reader, "Enter computer name: ")
-	termination_status := Remove_Vertex_Logic(graph, comp_remove)
+	termination_status := logic.Remove_Vertex_Logic(graph, comp_remove)
 	switch termination_status {
 	case 1:
 		fmt.Println("Error: There no such computer in computer network")
 	}
 }
 
-func D4_Remove_Edge(graph *Graph) {
+func D4_Remove_Edge(graph *internal.Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
-	termination_status := Remove_Edge_Logic(graph, comp_src, comp_dst)
+	termination_status := logic.Remove_Edge_Logic(graph, comp_src, comp_dst)
 	switch termination_status {
 	case 1:
 		fmt.Printf("Error: There no computer with name %s\n", comp_src)
@@ -61,7 +70,7 @@ func D4_Remove_Edge(graph *Graph) {
 	}
 }
 
-func D6_Change_Edge(graph *Graph) {
+func D6_Change_Edge(graph *internal.Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	comp_src := Read_non_empty_string(reader, "Enter computer name for source computer: ")
 	comp_dst := Read_non_empty_string(reader, "Enter computer name for destination computer: ")
@@ -72,14 +81,14 @@ func D6_Change_Edge(graph *Graph) {
 		new_ports[i] = Read_integer(reader, "Enter port: ")
 	}
 
-	termination_status := Change_Edge_Logic(graph, comp_src, comp_dst, new_ports_count, new_ports)
+	termination_status := logic.Change_Edge_Logic(graph, comp_src, comp_dst, new_ports_count, new_ports)
 	switch termination_status {
 	case 1:
 		fmt.Printf("Error: There no edge between %s and %s \n", comp_src, comp_dst)
 	}
 }
 
-func D7_Output_as_adjacency_list(graph *Graph) {
+func D7_Output_as_adjacency_list(graph *internal.Graph) {
 	for comp, node := range graph.Table {
 		fmt.Printf("Computer name: %s Port: %d  ", comp, node.Vertex.Port)
 		if node.Adjacent == nil {
@@ -87,17 +96,17 @@ func D7_Output_as_adjacency_list(graph *Graph) {
 			continue
 		}
 		for elem := node.Adjacent.Front(); elem != nil; elem = elem.Next() {
-			adjacent_vertex := elem.Value.(*AdjacentVertex)
+			adjacent_vertex := elem.Value.(*internal.AdjacentVertex)
 			fmt.Printf(" ->  %s", adjacent_vertex.Vertex.Comp)
 		}
 		fmt.Printf("\n")
 	}
 }
 
-func D8_Graphviz_Output(graph *Graph) {
+func D8_Graphviz_Output(graph *internal.Graph) {
 	reader := bufio.NewReader(os.Stdin)
 	filename := Read_non_empty_string(reader, "Enter filename: ")
-	termination_status := Create_Dot_File(graph, filename)
+	termination_status := logic.Create_Dot_File(graph, filename)
 	switch termination_status {
 	case 1:
 		fmt.Println("Error")
@@ -153,9 +162,9 @@ func Print_menu() {
 	fmt.Printf("4. Remove edge\n")
 	fmt.Printf("5. Change vertex\n")
 	fmt.Printf("6. Change edge\n")
-	fmt.Printf("7. Output graph as adjacency list\n")
+	fmt.Printf("7. Output internal as adjacency list\n")
 	fmt.Printf("8. Graphical output\n")
 	fmt.Printf("9. Graph traversal:BFS\n")
-	fmt.Printf("10. Find the shortest path between two vertices of a graph\n")
+	fmt.Printf("10. Find the shortest path between two vertices of a internal\n")
 	fmt.Printf("11. Special operation: partitioning into connected components\n")
 }
