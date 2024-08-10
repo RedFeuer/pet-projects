@@ -4,6 +4,7 @@ import (
 	"ComputerNetwork/internal"
 	"container/list"
 	"fmt"
+	"math"
 	"os"
 )
 
@@ -146,4 +147,35 @@ func Create_Dot_File(graph *internal.Graph, filename string) int {
 	file.WriteString("}\n")
 	return 0
 	//return nil
+}
+
+func BFS(graph *internal.Graph, source string) {
+	for _, node := range graph.Table {
+		if node.Vertex.Comp == source {
+			continue
+		}
+		node.Vertex.Color = internal.WHITE
+		node.Vertex.Path_size = math.MaxInt
+		node.Vertex.Parent = nil
+	}
+
+	graph.Table[source].Vertex.Color = internal.GRAY
+	graph.Table[source].Vertex.Path_size = 0
+	graph.Table[source].Vertex.Parent = nil
+	queue := list.New()
+	queue.PushBack(graph.Table[source])
+	for queue.Len() > 0 {
+		current := queue.Front() //достаем первый элемент из очереди
+		current_node := current.Value.(*internal.Node)
+		for adjacent := current_node.Adjacent.Front(); adjacent != nil; adjacent = adjacent.Next() {
+			adjacent_vertex := adjacent.Value.(*internal.Vertex)
+			if adjacent_vertex.Color == internal.WHITE {
+				adjacent_vertex.Color = internal.GRAY
+				adjacent_vertex.Path_size = current_node.Vertex.Path_size + 1
+				adjacent_vertex.Parent = current_node
+			}
+		}
+		current_node.Vertex.Color = internal.BLACK
+		queue.Remove(current) // удаляем рассмотренный элемент из очереди
+	}
 }
