@@ -36,9 +36,9 @@ type Graph struct {
 type COLOR int
 
 const (
-	WHITE COLOR = iota // 0 - белый
-	GRAY               // 1 - серый
-	BLACK              // 2 - черный
+	WHITE int = iota // 0 - белый
+	GRAY             // 1 - серый
+	BLACK            // 2 - черный
 )
 
 func Create_graph() *Graph {
