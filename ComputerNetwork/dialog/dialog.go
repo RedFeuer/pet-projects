@@ -113,6 +113,12 @@ func D8_Graphviz_Output(graph *internal.Graph) {
 	}
 }
 
+func D9_BFS_dialog(graph *internal.Graph) {
+	reader := bufio.NewReader(os.Stdin)
+	source := Read_non_empty_string(reader, "Enter computer name to Breadth-First Search: ")
+	logic.BFS(graph, source)
+}
+
 func Read_non_empty_string(reader *bufio.Reader, prompt string) string {
 	var result string
 	var err error
