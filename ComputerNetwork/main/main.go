@@ -37,6 +37,8 @@ func main() {
 			dialog.D7_Output_as_adjacency_list(graph)
 		case 8:
 			dialog.D8_Graphviz_Output(graph)
+		case 9:
+			dialog.D9_BFS_dialog(graph)
 		}
 	}
 }
