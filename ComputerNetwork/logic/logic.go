@@ -1,7 +1,10 @@
 package logic
 
 import (
-	// g "github.com/RedFeuer/pet-projects/ComputerNetwork/graph"
+	// g "github.com/RedFeuer/pet-projects/ComputerNetwork/internal"
+	"container/list"
+	"fmt"
+	"os"
 )
 
 func Insert_Edge_logic(graph *Graph, comp_src string, comp_dst string, ports_count uint, ports []uint) int {
@@ -109,7 +112,7 @@ func Create_Dot_File(graph *Graph, filename string) int {
 	}
 	defer file.Close()
 
-	file.WriteString("graph G {\n")
+	file.WriteString("internal G {\n")
 
 	/*хэш-таблица(map) уже записанных в файл вершин*/
 	vertices := make(map[string]bool)
