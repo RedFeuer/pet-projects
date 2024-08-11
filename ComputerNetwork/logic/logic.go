@@ -170,7 +170,6 @@ func BFS(graph *internal.Graph, source string, port_search uint) *internal.Node 
 		current := queue.Front() //достаем первый элемент из очереди
 		current_node := current.Value.(*internal.Node)
 		for adjacent := current_node.Adjacent.Front(); adjacent != nil; adjacent = adjacent.Next() {
-			// adjacent_vertex := adjacent.Value.(*internal.AdjacentVertex)
 			adjacent_vertex := adjacent.Value.(*internal.AdjacentVertex).Vertex
 			if adjacent_vertex.Color == internal.WHITE {
 				/*сделать проверку по допустимости прохода по ребру(ПРОВЕРЯТЬ ПОРТЫ)*/
@@ -191,7 +190,6 @@ func BFS(graph *internal.Graph, source string, port_search uint) *internal.Node 
 	МИНИМАЛЬНЫМИ РАЗМЕРОМ ПУТИ PATH_SIZE*/
 	comp_result := Port_selection(graph, port_search)
 	return graph.Table[comp_result]
-	/* ИДЕЯ 2: */
 }
 
 func Port_selection(graph *internal.Graph, port_search uint) string {
