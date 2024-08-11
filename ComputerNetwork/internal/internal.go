@@ -1,6 +1,9 @@
 package internal
 
-import "container/list"
+import (
+	"container/list"
+	"fmt"
+)
 
 type Vertex struct {
 	Comp      string // уникальное имя компьютера
@@ -91,6 +94,20 @@ func Remove_Adjacent_Vertex(graph *Graph, comp_remove string) {
 					node.Adjacent.Remove(elem)
 				}
 			}
+		}
+	}
+}
+
+func Print_path(node_source, node_result *Node) {
+	if node_source == node_result {
+		fmt.Println(node_source.Vertex.Comp)
+	} else {
+		if node_result == nil || node_result.Vertex == nil || node_result.Vertex.Parent == nil {
+			//fmt.Printf("There no path between %s and %s\n", node_source.Vertex.Comp, node_result.Vertex.Comp)
+			fmt.Println("Path does not exist")
+		} else {
+			Print_path(node_source, node_result.Vertex.Parent)
+			fmt.Println(node_result.Vertex.Comp)
 		}
 	}
 }
