@@ -149,9 +149,9 @@ func Create_Dot_File(graph *internal.Graph, filename string) int {
 	//return nil
 }
 
-func BFS(graph *internal.Graph, source string) {
-	/*ЗАКОНЧИЛ ЗДЕСЬ
-	СДЕЛАТЬ ТАК, ЧТОБЫ ИСКАЛО КРАТЧАЙШИЙ ПУТЬ ДО УКАЗАННОГО ПОРТА, УЧИТЫВАЮ ДОПУСТИМЫЕ ДЛЯ ПРОХОДА ПО РЕБРУ ПОРТЫ*/
+func BFS(graph *internal.Graph, source string, port_search uint) *internal.Node {
+	/*сделать так, чтобы искало, есть ли в принципе в таблице нода с таким портом*/
+
 	for _, node := range graph.Table {
 		if node.Vertex.Comp == source {
 			continue
@@ -170,14 +170,38 @@ func BFS(graph *internal.Graph, source string) {
 		current := queue.Front() //достаем первый элемент из очереди
 		current_node := current.Value.(*internal.Node)
 		for adjacent := current_node.Adjacent.Front(); adjacent != nil; adjacent = adjacent.Next() {
-			adjacent_vertex := adjacent.Value.(*internal.Vertex)
+			// adjacent_vertex := adjacent.Value.(*internal.AdjacentVertex)
+			adjacent_vertex := adjacent.Value.(*internal.AdjacentVertex).Vertex
 			if adjacent_vertex.Color == internal.WHITE {
+				/*сделать проверку по допустимости прохода по ребру(ПРОВЕРЯТЬ ПОРТЫ)*/
+				/*сделать BFS_Relax*/
 				adjacent_vertex.Color = internal.GRAY
 				adjacent_vertex.Path_size = current_node.Vertex.Path_size + 1
 				adjacent_vertex.Parent = current_node
+
+				/*добавляем обработанную(серую) ноду в очередь*/
+				adjacent_node := graph.Table[adjacent_vertex.Comp]
+				queue.PushBack(adjacent_node)
 			}
 		}
 		current_node.Vertex.Color = internal.BLACK
 		queue.Remove(current) // удаляем рассмотренный элемент из очереди
 	}
+	/* ИДЕЯ 1: СДЕЛАТЬ ФУНКЦИЮ, КОТОРАЯ БУДЕТ ПРОХОДИТЬ ПО ТАБЛИЦЕ И ПРОВЕРЯТЬ НА СОВПАДЕНИЕ PORT И ВОЗВРАЩАТЬ COMP С
+	МИНИМАЛЬНЫМИ РАЗМЕРОМ ПУТИ PATH_SIZE*/
+	comp_result := Port_selection(graph, port_search)
+	return graph.Table[comp_result]
+	/* ИДЕЯ 2: */
+}
+
+func Port_selection(graph *internal.Graph, port_search uint) string {
+	path_size_min := math.MaxInt
+	var comp_result string
+	for _, node := range graph.Table {
+		if node.Vertex.Port == port_search && node.Vertex.Path_size < path_size_min {
+			path_size_min = node.Vertex.Path_size
+			comp_result = node.Vertex.Comp
+		}
+	}
+	return comp_result
 }
