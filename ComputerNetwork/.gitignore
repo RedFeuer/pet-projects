@@ -2,3 +2,4 @@
 .idea
 main/.idea
 main/*.dot
+*.dot
