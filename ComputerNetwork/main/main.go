@@ -31,6 +31,8 @@ func main() {
 			dialog.D3_Remove_Vertex(graph)
 		case 4:
 			dialog.D4_Remove_Edge(graph)
+		case 5:
+			dialog.D5_Change_Vertex(graph)
 		case 6:
 			dialog.D6_Change_Edge(graph)
 		case 7:
