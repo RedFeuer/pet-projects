@@ -204,3 +204,21 @@ func Port_selection(graph *internal.Graph, port_search uint) string {
 	}
 	return comp_result
 }
+
+func Insert_Vertex_Logic(graph *internal.Graph, comp string, port uint) int {
+	if graph.Table[comp] != nil {
+		return 1
+	}
+	new_vertex := internal.Create_vertex(comp, port)
+	new_node := internal.Initialize_node(new_vertex)
+	graph.Table[comp] = new_node
+	return 0
+}
+
+func Change_Vertex_Logic(graph *internal.Graph, comp string, new_port uint) int {
+	if graph.Table[comp] == nil {
+		return 1
+	}
+	graph.Table[comp].Vertex.Port = new_port
+	return 0
+}
