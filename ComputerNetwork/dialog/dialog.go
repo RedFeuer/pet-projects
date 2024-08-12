@@ -14,9 +14,12 @@ func D1_Insert_Vertex(graph *internal.Graph) {
 	comp := Read_non_empty_string(reader, "Enter unique computer name: ")
 	fmt.Printf("Enter number of port for computer %s", comp)
 	port := Read_integer(reader, ": ")
-	new_vertex := internal.Create_vertex(comp, port)
-	new_node := internal.Initialize_node(new_vertex)
-	graph.Table[comp] = new_node
+	termimation_status := logic.Insert_Vertex_Logic(graph, comp, port)
+	switch termimation_status {
+	case 1:
+		fmt.Printf("Error: You are trying to create vertex that already exist\n" +
+			"If you want to change existing vertex - go to p.5 of menu\n")
+	}
 }
 
 func D2_Insert_Edge(graph *internal.Graph) {
@@ -67,6 +70,18 @@ func D4_Remove_Edge(graph *internal.Graph) {
 		fmt.Printf("Error: There no computer with name %s\n", comp_dst)
 	case 3:
 		fmt.Printf("Error: There is no edge between %s and %s \n", comp_src, comp_dst)
+	}
+}
+
+func D5_Change_Vertex(graph *internal.Graph) {
+	reader := bufio.NewReader(os.Stdin)
+	comp := Read_non_empty_string(reader, "Enter computer name you want to change: ")
+	new_port := Read_integer(reader, "Enter new port:")
+	termination_status := logic.Change_Vertex_Logic(graph, comp, new_port)
+	switch termination_status {
+	case 1:
+		fmt.Printf("Error: You can't change vertex that don't exist\n" +
+			" If you want to create it - go to p.1 of menu\n")
 	}
 }
 
