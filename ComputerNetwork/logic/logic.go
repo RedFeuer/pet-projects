@@ -169,9 +169,10 @@ func BFS(graph *internal.Graph, source string, port_search uint) *internal.Node 
 	for queue.Len() > 0 {
 		current := queue.Front() //достаем первый элемент из очереди
 		current_node := current.Value.(*internal.Node)
-		for adjacent := current_node.Adjacent.Front(); adjacent != nil; adjacent = adjacent.Next() {
-			adjacent_vertex := adjacent.Value.(*internal.AdjacentVertex).Vertex
-			if adjacent_vertex.Color == internal.WHITE {
+		for adjacent_elem := current_node.Adjacent.Front(); adjacent_elem != nil; adjacent_elem = adjacent_elem.Next() {
+			adjacent := adjacent_elem.Value.(*internal.AdjacentVertex)
+			adjacent_vertex := adjacent.Vertex
+			if adjacent_vertex.Color == internal.WHITE && internal.Vertex_is_reachable(adjacent) {
 				/*сделать проверку по допустимости прохода по ребру(ПРОВЕРЯТЬ ПОРТЫ)*/
 				/*сделать BFS_Relax*/
 				adjacent_vertex.Color = internal.GRAY
