@@ -111,3 +111,14 @@ func Print_path(node_source, node_result *Node) {
 		}
 	}
 }
+
+/*проверяет является ли вершина достижимой из соседней*/
+func Vertex_is_reachable(adjacent_vertex *AdjacentVertex) bool {
+	var i uint = 0
+	for i = 0; i < adjacent_vertex.Edge.Ports_count; i++ {
+		if adjacent_vertex.Vertex.Port == adjacent_vertex.Edge.Ports[i] {
+			return true
+		}
+	}
+	return false
+}
